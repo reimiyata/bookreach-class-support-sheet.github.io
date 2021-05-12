@@ -6,7 +6,7 @@ $(document).ready(function () {
   hearingDom.find("#data-submissiontime").text("受付日時：" + sheetinfo["受付日時"]);
   hearingDom.find("#data-lastmodifiedtime").text("最終更新日時：" + sheetinfo["最終更新日時"]);
   hearingDom.find("#data-creator").text("作成者：" + sheetinfo["作成者"]);
-  hearingDom.find("#data-version").text("バージョン："+ sheetinfo["バージョン"]);
+  hearingDom.find("#data-version").text("バージョン：" + sheetinfo["バージョン"]);
   hearingDom.find("#data-progress").val(sheetinfo["進行状況"]);
   hearingDom.find("#data-teacher").val(sheetinfo["授業者"]);
   hearingDom.find("#data-librarian").val(sheetinfo["司書"]);
@@ -14,14 +14,14 @@ $(document).ready(function () {
   hearingDom.find("#data-sheetnote").val(sheetinfo["メモ"]);
 });
 
-function makeForm(formType, formDefault, formOption, id){
+function makeForm(formType, formDefault, formOption, id) {
   let formDom = "";
   if (formType == "input") {
     formDom = $(`<input type="text" class="form-control form-control-sm" placeholder="" aria-label="" value="${formDefault}">`);
   } else if (formType == "textarea") {
-    formDom = $(`<textarea class="form-control form-control-sm auto-resize" rows="1" placeholder="" value="${formDefault}"></textarea>`);
+    formDom = $(`<textarea class="form-control form-control-sm auto-resize" rows="1" placeholder="" value="">${formDefault.replace(/▶/g, "\n")}</textarea>`);
   } else if (formType == "select") {
-    formDom = $(`<div class="dropdown dropdown-option"><input type="text" class="form-control form-control-sm searchformss dropdown-toggle" data-toggle="dropdown" placeholder="" value=""><div class="dropdown-menu"></div></div>`);
+    formDom = $(`<div class="dropdown dropdown-option"><input type="text" class="form-control form-control-sm searchformss dropdown-toggle" data-toggle="dropdown" placeholder="" value="${formDefault}"><div class="dropdown-menu"></div></div>`);
     let options = formOption.split('／');
     for (let i = 0; i < options.length; i++) {
       let optionDom = $(`<option>${options[i]}</option>`);
@@ -32,7 +32,7 @@ function makeForm(formType, formDefault, formOption, id){
     let formDefaultList = formDefault.split("／")
     let options = formOption.split('／');
     for (let i = 0; i < options.length; i++) {
-      let checked = (formDefaultList.includes(options[i]) ) ? 'checked="checked"' : "";
+      let checked = (formDefaultList.includes(options[i])) ? 'checked="checked"' : "";
       let optionDom = $(`<div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="${id}-${options[i]}" value="${options[i]}" ${checked}><label class="form-check-label" for="${id}-${options[i]}">${options[i]}</label></div>`);
       formDom.append(optionDom);
     }
@@ -40,7 +40,7 @@ function makeForm(formType, formDefault, formOption, id){
     formDom = $(`<div class="radio-wrap"></div>`);
     let options = formOption.split('／');
     for (let i = 0; i < options.length; i++) {
-      let checked = (options[i] == formDefault) ? 'checked="checked"':"";
+      let checked = (options[i] == formDefault) ? 'checked="checked"' : "";
       let optionDom = $(`<div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="radio-${id}" id="${id}-${options[i]}" value="${options[i]}" ${checked}><label class="form-check-label" for="${id}-${options[i]}">${options[i]}</label></div>`);
       formDom.append(optionDom);
     }
@@ -49,7 +49,7 @@ function makeForm(formType, formDefault, formOption, id){
 }
 
 function makeBRtag(string) {
-  return string.replace(/▶/g, "<br>")
+  return string.replace(/▶/g, "<br>");
 }
 
 
@@ -74,7 +74,7 @@ $(document).ready(function () {
       prior += "*";
     }
     let eachDom = $(`<div id="${id}" data-parent="${parent}" class="hearing-each-wrap level-${level} ${type}"  data-name="${name}"><div class="hearing-each-name">${prefix}(${idsimple}) ${name}${prior}</div></div>`);
-    if (type=="terminal") {
+    if (type == "terminal") {
       eachDom.append($(`<div class="form-wrap"><div class="form-main"></div></div>`));
       let dependence = structure[i]["form"]["dependence"];
       let description = structure[i]["form"]["description"];
@@ -96,17 +96,31 @@ $(document).ready(function () {
 });
 
 // textareaの動的リサイズ
+// 読み込み時
+$(document).ready(function () {
+  $('textarea.auto-resize').each(function (index, element) {
+    if ($(element).outerHeight() > this.scrollHeight) {
+      $(element).height(1)
+    }
+    while ($(element).outerHeight() < this.scrollHeight) {
+      $(element).height($(element).height() + 1)
+    }
+  })
+});
+
+// 入力時
 $(function () {
   $(document).on('change keyup keydown paste cut',
     'textarea.auto-resize', function () {
-    if ($(this).outerHeight() > this.scrollHeight) {
-      $(this).height(1)
-    }
-    while ($(this).outerHeight() < this.scrollHeight) {
-      $(this).height($(this).height() + 1)
-    }
-  });
+      if ($(this).outerHeight() > this.scrollHeight) {
+        $(this).height(1)
+      }
+      while ($(this).outerHeight() < this.scrollHeight) {
+        $(this).height($(this).height() + 1)
+      }
+    });
 });
+
 
 // ヒアリング項目マウスオーバー
 $(document).on("mouseenter", ".form-control", function () {
@@ -118,9 +132,9 @@ $(document).on("mouseleave", ".form-control", function () {
 
 
 // ガイドの生成と移動
-function makeGuide (id) {
+function makeGuide(id) {
   let structure = JSON.parse($("#data-structure").html());
-  let targetDom = $("#"+id);
+  let targetDom = $("#" + id);
   let guideDom = $("#guide-wrap");
   let name = targetDom.attr("data-name");
   let description = targetDom.attr("data-description");
@@ -134,7 +148,7 @@ function makeGuide (id) {
   // 見出しの作成
   while (parent_id != "root") {
     for (var i = 0; i < structure.length; i++) {
-      if (structure[i]["id"] == parent_id){
+      if (structure[i]["id"] == parent_id) {
         let id_last = parent_id.split('-').slice(-1)[0];
         heading = `(${id_last}) ${structure[i]["name"]} ＞ ${heading}`;
         parent_id = structure[i]["parent"];
@@ -157,7 +171,7 @@ function makeGuide (id) {
   }
 
   // 表示アニメーション
-  $(".guide-item-wrap").css({display: "none"});
+  $(".guide-item-wrap").css({ display: "none" });
   // $(".guide-item-wrap").removeClass("hidden");
   $(".guide-item-wrap").css({
     top: targetDom.offset().top - 200
@@ -231,7 +245,7 @@ $(document).on('click', 'a.hearing-item-option', function () {
 
   // 依存関係の選択肢の動的な生成
   let id = $(this).parents(".hearing-each-wrap").attr("id");
-  let dependence = JSON.parse($("#data-dependence").html());  
+  let dependence = JSON.parse($("#data-dependence").html());
 
   if (!dependence[id]) {
     return null;
@@ -332,7 +346,7 @@ $(document).on('click', '#output-sheet', function () {
 
   // シート管理情報
   $(".sheet-info-each").each(function (index, element) {
-    if ($(element).hasClass("input-group-text")){
+    if ($(element).hasClass("input-group-text")) {
       let string = $(element).text().split("：").join("\t");
       tsv_data = tsv_data + string + "\r\n";
     } else {
