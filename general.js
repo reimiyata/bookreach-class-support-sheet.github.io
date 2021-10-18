@@ -2,11 +2,11 @@
 $(document).ready(function () {
   let sheetinfo = JSON.parse($("#data-sheetinfo").html());
   let hearingDom = $("#basic-info-wrap");
-  hearingDom.find("#data-submissionid").text("受付番号：" + sheetinfo["受付番号"]);
-  hearingDom.find("#data-submissiontime").text("受付日時：" + sheetinfo["受付日時"]);
-  hearingDom.find("#data-lastmodifiedtime").text("最終更新日時：" + sheetinfo["最終更新日時"]);
-  hearingDom.find("#data-creator").text("作成者：" + sheetinfo["作成者"]);
-  hearingDom.find("#data-version").text("バージョン：" + sheetinfo["バージョン"]);
+  hearingDom.find("#data-submissionid").val(sheetinfo["受付番号"]);
+  hearingDom.find("#data-submissiontime").val(sheetinfo["受付日"]);
+  hearingDom.find("#data-lastmodifiedtime").val(sheetinfo["最終更新日"]);
+  hearingDom.find("#data-creator").val(sheetinfo["作成者"]);
+  hearingDom.find("#data-version").val(sheetinfo["バージョン"]);
   hearingDom.find("#data-progress").val(sheetinfo["進行状況"]);
   hearingDom.find("#data-teacher").val(sheetinfo["授業者"]);
   hearingDom.find("#data-librarian").val(sheetinfo["司書"]);

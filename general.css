@@ -85,7 +85,10 @@ main{
 .hlp-level0{
     position: fixed;
 }
-#data-answerdate, #data-librarian, #data-classdate, #data-teacher{
+#data-version{
+    max-width: 50px;
+}
+#data-submissionid, #data-submissiontime, #data-lastmodifiedtime, #data-creator, #data-answerdate, #data-librarian, #data-classdate, #data-teacher{
     max-width: 100px;
 }
 #data-classname{
