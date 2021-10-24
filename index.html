@@ -26,7 +26,7 @@
 <body>
 	<header>
 		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-			<a class="navbar-brand" href="#">授業向け資料提供のための打ち合わせシート</a>
+			<a class="navbar-brand" href="#">授業向け教材資料提供のための打ち合わせシート Ver.2</a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
 				aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
@@ -35,6 +35,15 @@
 				<ul class="navbar-nav mr-auto">
 					<li class="nav-item active">
 						<a class="nav-link" href="#" data-toggle="modal" data-target="#howtoModal">使い方<span class="sr-only">(current)</span></a>
+					</li>
+					<li class="nav-item active">
+						<a class="nav-link" href="#" data-toggle="modal" data-target="#historyModal">更新履歴</a>
+					</li>
+					<li class="nav-item active">
+						<a class="nav-link" href="#" data-toggle="modal" data-target="#researchModal">研究背景</a>
+					</li>
+					<li class="nav-item active">
+						<a class="nav-link" href="#" data-toggle="modal" data-target="#feedbackModal">フィードバック</a>
 					</li>
 				</ul>
 			</div>
@@ -133,7 +142,7 @@
 			</div>
 			<div class="modal-body">
 				<ul>
-					<li>よりよい授業用の資料提供のために、「(A) 授業に関する情報」「(B) 資料に関する情報」「(C) 提供に関する情報」の各項目を埋めてください。</li>
+					<li>よりよい授業向け教材資料提供のために、「(A) 授業に関する情報」「(B) 資料に関する情報」「(C) 提供に関する情報」の各項目を埋めてください。</li>
 					<li>このシートは、教員と学校司書が共同で徐々に作り上げていくものです。</li>
 						<ul>
 							<li>最初から完全なものを作る必要はありません。</li>
@@ -143,6 +152,93 @@
 					</li>
 					<li>一部の入力項目については、入力欄にフォーカスすると、選択肢や回答フォーマットがドロップダウンメニューで表示されます。なるべく選択肢から選ぶようにしてください。該当する項目がない場合は、自由に記述してください。</li>
 				</ul>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="historyModal" tabindex="-1" role="dialog" aria-labelledby="historyModalTitle"
+	aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="historyModalTitle">更新履歴</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<ul>
+					<li>Ver.2: 学校図書館職員経験者によるフィードバックを反映</li>
+					<li>Ver.1: 先行研究（宮田・矢田・浅石, 2018; 浅石・矢田・宮田, 2020）をベースに設計</li>
+				</ul>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="researchModal" tabindex="-1" role="dialog" aria-labelledby="researchModalTitle"
+	aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="researchModalTitle">研究背景</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<ul>
+					<li>宮田玲, 浅石卓真, 矢田竣太郎 (2021)「学校図書館による教材資料提供プロセスのモデル化と教員連携を促す打ち合わせシートの開発」第69回日本図書館情報学会研究大会, 熊本（ハイブリッド開催）, pp.5–8.
+						<ul>
+							<li>打ち合わせシートの設計方針とVer.1の開発についての報告</li>
+							<li>学校図書館職員経験者への予備評価アンケートも実施</li>
+							<li>スライドは<a href="https://jslis.jp/wp-content/uploads/2021/10/202110_presentation_Miyata-slide.pdf"
+									target="_blank">こちら</a></li>
+							<li>大会発表論文集は<a href="https://jslis.jp/wp-content/uploads/2021/10/2021-conf.-proceedings_no-ads.pdf"
+									target="_blank">こちら</a></li>
+						</ul>
+					</li>
+					<li>浅石卓真, 宮田玲, 矢田竣太郎 (2020)「<a href="http://doi.org/10.15119/00002944" target="_blank">司書はどのように教材を選定しているか：教材検索システムの開発に向けた予備調査</a>」『アカデミア. 人文・自然科学編』20, pp.99–112.
+						<ul>
+							<li>現役司書への資料選定に関するインタビュー調査結果の報告</li>
+							<li>2名の司書に理科の単元に関する資料選定を依頼し、そのプロセスを記録・調査</li>
+						</ul>
+					</li>
+					<li>宮田玲, 矢田竣太郎, 浅石卓真 (2018)「<a href="https://www.jstage.jst.go.jp/article/jslis/64/3/64_115/_article/-char/ja/"
+							target="_blank">学校図書館の教員サポートにおける授業に関連した資料提供の事例分析</a>」『日本図書館情報学会誌』64(3), pp.115–131.
+						<ul>
+							<li>打ち合わせシートの項目設計のベースとなる記述的研究</li>
+							<li>授業向け教材資料提供に関する過去の実践事例279件を調査</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="feedbackModalTitle"
+	aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="feedbackModalTitle">ご意見・ご感想</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				打ち合わせシートへのご意見・ご感想を<a href="https://forms.gle/vTFxaJh4mr7sjSdt5" target="_blank">こちらのフォーム</a>より受け付けております。
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
