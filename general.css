@@ -5,6 +5,7 @@ body{
 }
 main{
     margin-top: 60px;
+    margin-left: 5px;
     margin-bottom: 250px;
 }
 .input-group > .custom-select{
@@ -32,7 +33,7 @@ main{
 .marker{
     background-color: mistyrose;
 }
-.dropdown-menu.show{
+.form-main .dropdown-menu.show{
     width: 455px;
     font-size: small;
 }
@@ -44,7 +45,7 @@ main{
 #all-wrap{
     /* display: table; */
     clear: left;
-    margin: 20px;
+    /* margin: 20px; */
 }
 #basic-info-wrap{
     width: 1135px;
@@ -58,6 +59,28 @@ main{
     display: table-cell;
     width: 500px;
 }
+#menu-wrap{
+    display: table;
+    border-collapse: separate;
+    border-spacing: 4px 0;
+    margin: 0 -4px
+}
+#general-menu{
+    display: table-cell;
+}
+.menu-item{
+    display: table-cell;
+    vertical-align: top;
+}
+#select-sheet{
+    /* vertical-align: top; */
+}
+#open-user-sheet{
+    width: 250px;
+}
+/* #print-sheet, #open-sheet, #output-sheet-all{
+    display: table-cell;
+} */
 .guide-label{
     font-weight: bold;
     /* font-size: larger; */
@@ -185,4 +208,7 @@ main{
 }
 .hearing-item-option{
     padding-left: 10px;
+}
+.change-display-item{
+    width: 220px;
 }

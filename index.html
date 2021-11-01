@@ -19,10 +19,18 @@
 		crossorigin="anonymous"></script>
 	<script src="https://kit.fontawesome.com/cfb2f0b50f.js" crossorigin="anonymous"></script>
 
+	<!-- A little plugin for Bootstrap 4 custom file input -->
+	<script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.js"></script>
+
+
+	<!-- sheet.js (Excel出力） -->
+	<script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+
 	<script src="general.js"></script>
 
 	<title>授業向け教材資料提供のための打ち合わせシート Ver.2</title>
 </head>
+
 <body>
 	<header>
 		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
@@ -102,16 +110,39 @@
 
 		<div id="all-wrap" class="">
 	
-			<id id="info-wrap">
-				<div class="small mb-2"><span id="display-prior" class="btn btn-sm btn-outline-secondary">* 事前入力推奨項目のみを表示</span></div>
-			</id>
+			<div id="menu-wrap" class="mb-2">
+				<div class="small"><span id="display-prior" class="btn btn-sm btn-secondary change-display-item">* 事前入力推奨項目のみを表示</span></div>
+				<div class="menu-item">
+					<div id="print-sheet" class="btn btn-sm btn-outline-secondary">印刷</div>
+				</div>
+				<div class="dropdown menu-item">
+					<button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+						aria-haspopup="true" aria-expanded="false">
+						出力
+					</button>
+					<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+						<a id="output-sheet-tsv" class="dropdown-item" href="#">タブ区切りファイル（.tsv）で出力</a>
+						<a style="display:none;" id="downloader-tsv" href="#"></a>
+						<!-- <a class="dropdown-item" href="#">エクセルファイル（.xlsx）で出力</a> -->
+						<a id="output-sheet-json" class="dropdown-item" href="#">JSONファイル（.json）で出力（再読み込み可能形式）</a>
+						<a style="display:none;" id="downloader-json" href="#"></a>
+					</div>
+				</div>				
+				<div class="menu-item">
+					<div class="input-group small">
+						<div id="input-sheet-json" class="custom-file">
+							<input id="open-user-sheet" type="file" class="custom-file-input" accept=".json">
+							<label class="custom-file-label"  for="open-user-sheet" data-browse="参照">既存シート選択（JSON形式）</label>
+						</div>
+						<div class="input-group-append">
+							<button id="show-user-sheet" type="button" class="btn btn-outline-secondary btn-sm ">表示</button>
+						</div>
+					</div>
+				</div>
+
+			</div>
 			<div id="hearing-wrap">
 				<div id="hearing-item-wrap" class="level-0">
-				</div>
-				<div id="general-menu" class="mt-3">
-					<div id="print-sheet" class="btn btn-sm btn-primary">印刷</div>
-					<div id="output-sheet" class="btn btn-sm btn-warning">タブ区切りファイルで出力</div>
-					<a style="display:none;" id="downloader" href="#"></a>
 				</div>
 			</div>
 	
@@ -127,6 +158,12 @@
 
 		</div>
 	</main>
+
+	<!-- custom file input用 -->
+	<script>
+		bsCustomFileInput.init();
+	</script>
+
 </body>
 
 <!-- Modal -->
@@ -247,960 +284,957 @@
 	</div>
 </div>
 
-<script type="application/json" id="data-sheetinfo">
+<script type="application/json" id="data-sheetspec">
 {
-	"受付番号": "",
-	"受付日": "",
-	"最終更新日": "",
-	"作成者": "",
-	"バージョン": "",
-	"進行状況": "",
-	"授業者": "",
-	"司書": "",
-	"シート名": "",
-	"メモ": ""
-}
-</script>
-
-<script type="application/json" id="data-structure">
-
-
-[
-	{
-		"id": "A",
-		"parent": "root",
-		"level": 1,
-		"type": "nonterminal",
-		"name": "授業に関する情報",
-		"form": {
-		"prior": 1
-	}
+	"sheet-meta": {
+		"受付番号": "",
+		"受付日": "",
+		"最終更新日": "",
+		"作成者": "",
+		"バージョン": "",
+		"進行状況": "",
+		"授業者": "",
+		"司書": "",
+		"シート名": "",
+		"メモ": ""
 	},
-	{
-		"id": "A-01",
-		"parent": "A",
-		"level": 2,
-		"type": "terminal",
-		"name": "学年",
-		"form": {
-			"dependence": "",
-			"importance": 3,
-			"prior": 1,
-			"form-main": "select",
-			"form-main-default": "",
-			"form-main-option": "小1／小2／小3／小4／小5／小6／中1／中2／中3／高1／高2／高3",
-			"form-main-answer": "",
-			"form-sub": "",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "学年を記入してください。",
-			"example": "",
-			"memo": ""
+	"sheet-content": [
+		{
+			"id": "A",
+			"parent": "root",
+			"level": 1,
+			"type": "nonterminal",
+			"name": "授業に関する情報",
+			"form": {
+			"prior": 1
+			}
+		},
+		{
+			"id": "A-01",
+			"parent": "A",
+			"level": 2,
+			"type": "terminal",
+			"name": "学年",
+			"form": {
+				"dependence": "",
+				"importance": 3,
+				"prior": 1,
+				"form-main": "select",
+				"form-main-default": "",
+				"form-main-option": "小1／小2／小3／小4／小5／小6／中1／中2／中3／高1／高2／高3",
+				"form-main-answer": "",
+				"form-sub": "",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "学年を記入してください。",
+				"example": "",
+				"memo": ""
+			}
+		},
+		{
+			"id": "A-02",
+			"parent": "A",
+			"level": 2,
+			"type": "terminal",
+			"name": "教科等",
+			"form": {
+				"dependence": "A-01",
+				"importance": 3,
+				"prior": 1,
+				"form-main": "select",
+				"form-main-default": "",
+				"form-main-option": "国語／算数／数学／理科／社会／外国語／家庭／音楽／保健体育／図工／美術／工芸／書道／技術／情報科／生活科／道徳／総合／特別活動",
+				"form-main-answer": "",
+				"form-sub": "",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "教科等を記入してください。",
+				"example": "",
+				"memo": ""
+			}
+		},
+		{
+			"id": "A-03",
+			"parent": "A",
+			"level": 2,
+			"type": "nonterminal",
+			"name": "教科書",
+			"form": {
+					"prior": 1
 		}
-	},
-	{
-		"id": "A-02",
-		"parent": "A",
-		"level": 2,
-		"type": "terminal",
-		"name": "教科等",
-		"form": {
-			"dependence": "A-01",
-			"importance": 3,
-			"prior": 1,
-			"form-main": "select",
-			"form-main-default": "",
-			"form-main-option": "国語／算数／数学／理科／社会／外国語／家庭／音楽／保健体育／図工／美術／工芸／書道／技術／情報科／生活科／道徳／総合／特別活動",
-			"form-main-answer": "",
-			"form-sub": "",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "教科等を記入してください。",
-			"example": "",
-			"memo": ""
+		},
+		{
+			"id": "A-03-a",
+			"parent": "A-03",
+			"level": 3,
+			"type": "terminal",
+			"name": "教科書名",
+			"form": {
+				"dependence": "A-02",
+				"importance": 2,
+				"prior": 1,
+				"form-main": "select",
+				"form-main-default": "",
+				"form-main-option": "東京書籍",
+				"form-main-answer": "",
+				"form-sub": "",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "使用している教科書を記入してください。",
+				"example": "「国語３」（学校図書）／「新しい科学３年」（東京書籍）",
+				"memo": ""
+			}
+		},
+		{
+			"id": "A-03-b",
+			"parent": "A-03",
+			"level": 3,
+			"type": "terminal",
+			"name": "単元（章）",
+			"form": {
+				"dependence": "A-03-a",
+				"importance": 2,
+				"prior": 1,
+				"form-main": "select",
+				"form-main-default": "",
+				"form-main-option": "",
+				"form-main-answer": "",
+				"form-sub": "input",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "授業に対応する教科書の単元（章）を記入してください。",
+				"example": "",
+				"memo": ""
+			}
+		},
+		{
+			"id": "A-03-c",
+			"parent": "A-03",
+			"level": 3,
+			"type": "terminal",
+			"name": "ページ",
+			"form": {
+				"dependence": "A-03-a",
+				"importance": 1,
+				"prior": 0,
+				"form-main": "input",
+				"form-main-default": "pp.○-○",
+				"form-main-option": "",
+				"form-main-answer": "",
+				"form-sub": "",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "教科書中で、特に使用する部分のページを記入してください。上の質問項目で単元が指定されている場合は、必ずしも記入する必要はありません。",
+				"example": "pp.11-20, 71, 73",
+				"memo": ""
+			}
+		},
+		{
+			"id": "A-04",
+			"parent": "A",
+			"level": 2,
+			"type": "terminal",
+			"name": "授業テーマ",
+			"form": {
+				"dependence": "",
+				"importance": 1,
+				"prior": 0,
+				"form-main": "input",
+				"form-main-default": "",
+				"form-main-option": "",
+				"form-main-answer": "",
+				"form-sub": "",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "教科書の単元（章）とは別に、授業テーマや授業名が決まっていれば、記入してください。",
+				"example": "中世のものづくり／世界の食文化を調べよう",
+				"memo": ""
+			}
+		},
+		{
+			"id": "A-05",
+			"parent": "A",
+			"level": 2,
+			"type": "terminal",
+			"name": "授業のねらい",
+			"form": {
+				"dependence": "",
+				"importance": 2,
+				"prior": 0,
+				"form-main": "textarea",
+				"form-main-default": "",
+				"form-main-option": "",
+				"form-main-answer": "",
+				"form-sub": "",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "この授業の学習目標や授業方針を記入してください。",
+				"example": "身の回りの品物から、日本の産業の特色と課題を考察させる。／江戸時代の生活文化などを調べる活動を通じて、江戸文学への興味関心を持たせる。／校内で観察できる植物を図鑑で調べることで、参考図書の使い方を習得させる。",
+				"memo": ""
+			}
+		},
+		{
+			"id": "A-06",
+			"parent": "A",
+			"level": 2,
+			"type": "terminal",
+			"name": "授業の背景",
+			"form": {
+				"dependence": "",
+				"importance": 1,
+				"prior": 0,
+				"form-main": "textarea",
+				"form-main-default": "",
+				"form-main-option": "",
+				"form-main-answer": "",
+				"form-sub": "",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "授業のきっかけ、時期的背景など補足的な情報を記入してください。",
+				"example": "ヘルスリテラシーを育てるためのカリキュラム研究の一環[活用DB: A0003]／理科の修学旅行（秩父・長瀞地方の地形と地質の学習）の事前学習[活用DB: A0086]",
+				"memo": ""
+			}
+		},
+		{
+			"id": "A-07",
+			"parent": "A",
+			"level": 2,
+			"type": "terminal",
+			"name": "授業の実施期間",
+			"form": {
+				"dependence": "",
+				"importance": 3,
+				"prior": 1,
+				"form-main": "select",
+				"form-main-default": "",
+				"form-main-option": "2021年○月○旬〜2021年○月○旬／未定",
+				"form-main-answer": "",
+				"form-sub": "",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "図書を用いた活動を行う期間を記入してください。",
+				"example": "2021年5月中旬〜2021年6月中旬",
+				"memo": ""
+			}
+		},
+		{
+			"id": "A-08",
+			"parent": "A",
+			"level": 2,
+			"type": "nonterminal",
+			"name": "活動",
+			"form": {
+			"prior": 1
 		}
-	},
-	{
-		"id": "A-03",
-		"parent": "A",
-		"level": 2,
-		"type": "nonterminal",
-		"name": "教科書",
-		"form": {
+		},
+		{
+			"id": "A-08-a",
+			"parent": "A-08",
+			"level": 3,
+			"type": "terminal",
+			"name": "時間",
+			"form": {
+				"dependence": "",
+				"importance": 3,
+				"prior": 1,
+				"form-main": "input",
+				"form-main-default": "○時間目/○時間",
+				"form-main-option": "",
+				"form-main-answer": "",
+				"form-sub": "",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "図書を用いた活動に使う時間（時限）と、単元全体の総時間数を記入して下さい。",
+				"example": "1, 2時間目/8時間",
+				"memo": ""
+			}
+		},
+		{
+			"id": "A-08-b",
+			"parent": "A-08",
+			"level": 3,
+			"type": "terminal",
+			"name": "場所",
+			"form": {
+				"dependence": "",
+				"importance": 3,
+				"prior": 0,
+				"form-main": "checkbox",
+				"form-main-default": "",
+				"form-main-option": "教室／学校図書館／その他／未定",
+				"form-main-answer": "",
+				"form-sub": "input",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "活動の場所を選んでください（複数可）。「その他」を選択した場合、詳細欄に場所を記入してください。",
+				"example": "（その他の例）音楽室、家庭科室",
+				"memo": ""
+			}
+		},
+		{
+			"id": "A-08-c",
+			"parent": "A-08",
+			"level": 3,
+			"type": "terminal",
+			"name": "内容",
+			"form": {
+				"dependence": "",
+				"importance": 3,
+				"prior": 1,
+				"form-main": "checkbox",
+				"form-main-default": "",
+				"form-main-option": "調べ学習／読み聞かせ・ブックトーク／その他／未定",
+				"form-main-answer": "",
+				"form-sub": "textarea",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "活動内容を選択してください（複数可）。「その他」を選択した場合、詳細欄に具体的に記入してください。",
+				"example": "（その他の例）一斉読書、情報利用教育",
+				"memo": ""
+			}
+		},
+		{
+			"id": "A-08-d",
+			"parent": "A-08",
+			"level": 3,
+			"type": "terminal",
+			"name": "形態",
+			"form": {
+				"dependence": "",
+				"importance": 3,
+				"prior": 0,
+				"form-main": "checkbox",
+				"form-main-default": "",
+				"form-main-option": "個人学習／グループ学習／一斉授業／その他／未定",
+				"form-main-answer": "",
+				"form-sub": "textarea",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "活動形態を選択してください（複数可）。「その他」を選択した場合、詳細欄に具体的に記入してください。",
+				"example": "",
+				"memo": ""
+			}
+		},
+		{
+			"id": "A-08-e",
+			"parent": "A-08",
+			"level": 3,
+			"type": "terminal",
+			"name": "成果物",
+			"form": {
+				"dependence": "",
+				"importance": 3,
+				"prior": 0,
+				"form-main": "checkbox",
+				"form-main-default": "",
+				"form-main-option": "ワークシート／レポート／口頭発表／その他／未定",
+				"form-main-answer": "",
+				"form-sub": "textarea",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "活動の成果物を選択してください（複数可）。「その他」を選択した場合、詳細欄に具体的に記入してください。",
+				"example": "（その他の例）ポスター発表、演劇発表",
+				"memo": ""
+			}
+		},
+		{
+			"id": "A-08-f",
+			"parent": "A-08",
+			"level": 3,
+			"type": "terminal",
+			"name": "流れ",
+			"form": {
+				"dependence": "",
+				"importance": 1,
+				"prior": 0,
+				"form-main": "textarea",
+				"form-main-default": "",
+				"form-main-option": "",
+				"form-main-answer": "",
+				"form-sub": "",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "活動内容、形態、成果物等を踏まえつつ、図書を利用した活動の流れを、具体的に記入してください。",
+				"example": "(1) グループでキーワードを出し合い，それぞれ調査するテーマを決める。▶(2) テーマが決まったら各自で調べ作業に入る。最初は参考図書を使って，次に一般書・専門書等の図書にあたって調べを進める。▶(3) 調べたことをまとめて，グループ内でわかりやすく発表する。▶(4) グループの代表が全体の前で発表をする。[活用DB: A0125]",
+				"memo": ""
+			}
+		},
+		{
+			"id": "A-09",
+			"parent": "A",
+			"level": 2,
+			"type": "nonterminal",
+			"name": "授業者",
+			"form": {
 				"prior": 1
-	}
-	},
-	{
-		"id": "A-03-a",
-		"parent": "A-03",
-		"level": 3,
-		"type": "terminal",
-		"name": "教科書名",
-		"form": {
-			"dependence": "A-02",
-			"importance": 2,
-			"prior": 1,
-			"form-main": "select",
-			"form-main-default": "",
-			"form-main-option": "東京書籍",
-			"form-main-answer": "",
-			"form-sub": "",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "使用している教科書を記入してください。",
-			"example": "「国語３」（学校図書）／「新しい科学３年」（東京書籍）",
-			"memo": ""
 		}
-	},
-	{
-		"id": "A-03-b",
-		"parent": "A-03",
-		"level": 3,
-		"type": "terminal",
-		"name": "単元（章）",
-		"form": {
-			"dependence": "A-03-a",
-			"importance": 2,
-			"prior": 1,
-			"form-main": "select",
-			"form-main-default": "",
-			"form-main-option": "",
-			"form-main-answer": "",
-			"form-sub": "input",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "授業に対応する教科書の単元（章）を記入してください。",
-			"example": "",
-			"memo": ""
+		},
+		{
+			"id": "A-09-a",
+			"parent": "A",
+			"level": 3,
+			"type": "terminal",
+			"name": "同様の授業経験",
+			"form": {
+				"dependence": "",
+				"importance": 3,
+				"prior": 1,
+				"form-main": "radio",
+				"form-main-default": "",
+				"form-main-option": "経験あり／経験なし",
+				"form-main-answer": "",
+				"form-sub": "textarea",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "過去に、今回の授業と同様のテーマで授業を行ったことがある場合は、「経験あり」にチェックをしてください。特記事項があれば、詳細欄に記入してください。",
+				"example": "",
+				"memo": ""
+			}
+		},
+		{
+			"id": "A-09-b",
+			"parent": "A",
+			"level": 3,
+			"type": "terminal",
+			"name": "調べ学習経験",
+			"form": {
+				"dependence": "",
+				"importance": 1,
+				"prior": 0,
+				"form-main": "radio",
+				"form-main-default": "",
+				"form-main-option": "10単元以上／5〜9単元／1〜4単元／はじめて",
+				"form-main-answer": "",
+				"form-sub": "textarea",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "（調べ学習を行う場合のみ回答してください）調べ学習の授業を行った経験について選んでください。特記事項があれば、詳細欄に記入してください。",
+				"example": "",
+				"memo": ""
+			}
+		},
+		{
+			"id": "A-09-c",
+			"parent": "A",
+			"level": 3,
+			"type": "terminal",
+			"name": "読み聞かせ経験",
+			"form": {
+				"dependence": "",
+				"importance": 1,
+				"prior": 0,
+				"form-main": "radio",
+				"form-main-default": "",
+				"form-main-option": "10回以上／5〜9回／1〜4回／はじめて",
+				"form-main-answer": "",
+				"form-sub": "textarea",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "（読み聞かせやブックトークを行う場合のみ回答してください）授業として読み聞かせやブックトークを行った経験について選んでください。特記事項があれば、詳細欄に記入してください。",
+				"example": "",
+				"memo": ""
+			}
+		},
+		{
+			"id": "A-10",
+			"parent": "A",
+			"level": 2,
+			"type": "nonterminal",
+			"name": "学習者",
+			"form": {
+				"prior": 1
 		}
-	},
-	{
-		"id": "A-03-c",
-		"parent": "A-03",
-		"level": 3,
-		"type": "terminal",
-		"name": "ページ",
-		"form": {
-			"dependence": "A-03-a",
-			"importance": 1,
-			"prior": 0,
-			"form-main": "input",
-			"form-main-default": "pp.○-○",
-			"form-main-option": "",
-			"form-main-answer": "",
-			"form-sub": "",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "教科書中で、特に使用する部分のページを記入してください。上の質問項目で単元が指定されている場合は、必ずしも記入する必要はありません。",
-			"example": "pp.11-20, 71, 73",
-			"memo": ""
+		},
+		{
+			"id": "A-10-a",
+			"parent": "A",
+			"level": 3,
+			"type": "terminal",
+			"name": "クラス数",
+			"form": {
+				"dependence": "",
+				"importance": 3,
+				"prior": 1,
+				"form-main": "select",
+				"form-main-default": "",
+				"form-main-option": "1／2／3／4／5／6／7／8／9／10",
+				"form-main-answer": "",
+				"form-sub": "",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "クラスの数を記入してください。",
+				"example": "",
+				"memo": ""
+			}
+		},
+		{
+			"id": "A-10-b",
+			"parent": "A",
+			"level": 3,
+			"type": "terminal",
+			"name": "クラスの人数",
+			"form": {
+				"dependence": "",
+				"importance": 3,
+				"prior": 1,
+				"form-main": "input",
+				"form-main-default": "〜人",
+				"form-main-option": "",
+				"form-main-answer": "",
+				"form-sub": "",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "クラスの人数を記入してください。",
+				"example": "",
+				"memo": ""
+			}
+		},
+		{
+			"id": "A-10-c",
+			"parent": "A",
+			"level": 3,
+			"type": "terminal",
+			"name": "学習者の経験・様子",
+			"form": {
+				"dependence": "",
+				"importance": 1,
+				"prior": 0,
+				"form-main": "textarea",
+				"form-main-default": "",
+				"form-main-option": "",
+				"form-main-answer": "",
+				"form-sub": "textarea",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "学習者の調べ学習の経験や様子を記入してください。また、授業に関連した事前学習に行っている場合や過去に関連した単元の授業を行っている場合は、その内容を記入してください。",
+				"example": "中2の終わりから、京都に関する本を読み、自分達の班のテーマを明確にしてきました。 [活用DB: A0135]／一年生は今、ひらがなを習っている最中です。[活用DB: A0122]",
+				"memo": ""
+			}
+		},
+		{
+			"id": "A-11",
+			"parent": "A",
+			"level": 2,
+			"type": "terminal",
+			"name": "その他",
+			"form": {
+				"dependence": "",
+				"importance": 0,
+				"prior": 0,
+				"form-main": "textarea",
+				"form-main-default": "",
+				"form-main-option": "",
+				"form-main-answer": "",
+				"form-sub": "",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "上記以外に、授業に関して共有すべき事項があれば自由に記入してください。",
+				"example": "",
+				"memo": ""
+			}
+		},
+		{
+			"id": "B",
+			"parent": "root",
+			"level": 1,
+			"type": "nonterminal",
+			"name": "資料に関する情報",
+			"form": {
+				"prior": 1
+			}
+		},
+		{
+			"id": "B-01",
+			"parent": "B",
+			"level": 2,
+			"type": "terminal",
+			"name": "キーワード",
+			"form": {
+				"dependence": "",
+				"importance": 3,
+				"prior": 1,
+				"form-main": "input",
+				"form-main-default": "",
+				"form-main-option": "",
+				"form-main-answer": "",
+				"form-sub": "",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "用意して欲しい図書に関するキーワードを挙げてください。思いつくものをなるべく多めに挙げてください（３つ以上を目安）。",
+				"example": "火山、噴火、地震、断層／アイヌ、北海道、多文化共生",
+				"memo": ""
+			}
+		},
+		{
+			"id": "B-02",
+			"parent": "B",
+			"level": 2,
+			"type": "terminal",
+			"name": "指定図書",
+			"form": {
+				"dependence": "",
+				"importance": 1,
+				"prior": 0,
+				"form-main": "textarea",
+				"form-main-default": "",
+				"form-main-option": "",
+				"form-main-answer": "",
+				"form-sub": "",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "用意してほしい図書が決まっていれば、それらの書名や著者、冊数等を記入してください。",
+				"example": "『クラウディアの祈り』[活用DB: A0102]／夏目漱石と芥川龍之介の著作を10冊程度[活用DB: A0142]／『保存食のはなし』[活用DB: A0016]",
+				"memo": ""
+			}
+		},
+		{
+			"id": "B-03",
+			"parent": "B",
+			"level": 2,
+			"type": "terminal",
+			"name": "冊数",
+			"form": {
+				"dependence": "",
+				"importance": 2,
+				"prior": 0,
+				"form-main": "input",
+				"form-main-default": "約〜冊",
+				"form-main-option": "",
+				"form-main-answer": "",
+				"form-sub": "",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "用意して欲しい図書の冊数（種類数）を記入してください。",
+				"example": "",
+				"memo": ""
+			}
+		},
+		{
+			"id": "B-04",
+			"parent": "B",
+			"level": 2,
+			"type": "terminal",
+			"name": "複本",
+			"form": {
+				"dependence": "",
+				"importance": 3,
+				"prior": 1,
+				"form-main": "select",
+				"form-main-default": "",
+				"form-main-option": "希望なし／希望あり／未定",
+				"form-main-answer": "",
+				"form-sub": "textarea",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "複本に関する希望の有無を選択してください。「希望あり」を選択した場合、どのような図書について何冊程度の複本が必要か記入してください。",
+				"example": "全く同じ国語辞書を40冊[活用DB: A0199]",
+				"memo": ""
+			}
+		},
+		{
+			"id": "B-05",
+			"parent": "B",
+			"level": 2,
+			"type": "nonterminal",
+			"name": "図書の属性",
+			"form": {}
+		},
+		{
+			"id": "B-05-a",
+			"parent": "B-05",
+			"level": 3,
+			"type": "terminal",
+			"name": "資料形態",
+			"form": {
+				"dependence": "",
+				"importance": 3,
+				"prior": 0,
+				"form-main": "checkbox",
+				"form-main-default": "",
+				"form-main-option": "指定なし／単行本／文庫／新書／全集・叢書／辞典・事典／図鑑／絵本／コミック／DAISY／その他／未定",
+				"form-main-answer": "",
+				"form-sub": "input",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "図書の資料形態を選択してください（複数可）。「その他」を選択した場合、詳細欄に記入してください。避けて欲しい資料形態についても、詳細欄に記入してください。",
+				"example": "（その他の例）写真集",
+				"memo": ""
+			}
+		},
+		{
+			"id": "B-05-b",
+			"parent": "B-05",
+			"level": 3,
+			"type": "terminal",
+			"name": "内容",
+			"form": {
+				"dependence": "",
+				"importance": 1,
+				"prior": 0,
+				"form-main": "checkbox",
+				"form-main-default": "",
+				"form-main-option": "哲学／歴史・地理・伝記／社会科学／自然科学／技術／産業／芸術／言語／文学／文学（古典）／その他／未定",
+				"form-main-answer": "",
+				"form-sub": "input",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "図書の内容カテゴリーを選択してください（複数可）。より詳細な内容が決まっている場合、詳細欄に記入してください。",
+				"example": "江戸時代が舞台の小説[活用DB: A0001]／有名な数学者の伝記[活用DB: A0032]",
+				"memo": ""
+			}
+		},
+		{
+			"id": "B-05-c",
+			"parent": "B-05",
+			"level": 3,
+			"type": "terminal",
+			"name": "内容の新しさ",
+			"form": {
+				"dependence": "",
+				"importance": 3,
+				"prior": 0,
+				"form-main": "select",
+				"form-main-default": "",
+				"form-main-option": "出版から〜年以内／希望なし／未定",
+				"form-main-answer": "",
+				"form-sub": "",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "内容の新しさ（出版経過年数）に関する希望を記入してください。",
+				"example": "",
+				"memo": ""
+			}
+		},
+		{
+			"id": "B-05-d",
+			"parent": "B-05",
+			"level": 3,
+			"type": "terminal",
+			"name": "内容の難易度",
+			"form": {
+				"dependence": "",
+				"importance": 3,
+				"prior": 0,
+				"form-main": "checkbox",
+				"form-main-default": "",
+				"form-main-option": "小学校低学年／中学年／高学年／中学／高校／一般／指定なし／未定",
+				"form-main-answer": "",
+				"form-sub": "textarea",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "図書の難易度に関する希望があれば記入してください（複数可）。より詳細な要望があれば、詳細欄に記入してください。",
+				"example": "小学2年生が楽しめるもの[活用DB: A0149]",
+				"memo": ""
+			}
+		},
+		{
+			"id": "B-05-e",
+			"parent": "B-05",
+			"level": 3,
+			"type": "terminal",
+			"name": "その他の属性",
+			"form": {
+				"dependence": "",
+				"importance": 1,
+				"prior": 0,
+				"form-main": "textarea",
+				"form-main-default": "",
+				"form-main-option": "",
+				"form-main-answer": "",
+				"form-sub": "",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "その他希望する図書の属性（ジャンル、分量、サイズ、大きさ、目次や索引の有無など）を記入してください。",
+				"example": "短めの評論文が載っているもの／写真の多い、大きめの本／目次と索引のある本[活用DB: A0179]／文字があまり多くなく漢字にルビのあるもの[活用DB: A0170]",
+				"memo": "科学読み物"
+			}
+		},
+		{
+			"id": "B-06",
+			"parent": "B",
+			"level": 2,
+			"type": "terminal",
+			"name": "属性のバランス",
+			"form": {
+				"dependence": "",
+				"importance": 1,
+				"prior": 0,
+				"form-main": "textarea",
+				"form-main-default": "",
+				"form-main-option": "",
+				"form-main-answer": "",
+				"form-sub": "",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "資料全体における、上記(05)図書の属性（a〜e）のバランスについて、希望があれば記入してください。",
+				"example": "学年相応のものだけでなく、少しレベルを下げたものも入れて欲しい。／古くても良いものなら数冊程度は混ぜて良い。",
+				"memo": ""
+			}
+		},
+		{
+			"id": "B-07",
+			"parent": "B",
+			"level": 2,
+			"type": "terminal",
+			"name": "図書以外",
+			"form": {
+				"dependence": "",
+				"importance": 0,
+				"prior": 0,
+				"form-main": "checkbox",
+				"form-main-default": "",
+				"form-main-option": "新聞／雑誌／Webページ／その他／未定",
+				"form-main-answer": "",
+				"form-sub": "textarea",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "図書以外に用意して欲しい資料を選択してください。「その他」を選択した場合、詳細欄に具体的に記入してください。避けて欲しい資料形態についても、詳細欄に記入してください。",
+				"example": "（その他の例）電化製品のカタログ[活用DB: A0042]、調べ学習の前年度の作品[活用DB: A0062]、今回はインターネットは使いません",
+				"memo": ""
+			}
+		},
+		{
+			"id": "B-08",
+			"parent": "B",
+			"level": 2,
+			"type": "terminal",
+			"name": "教材研究用の図書",
+			"form": {
+				"dependence": "",
+				"importance": 1,
+				"prior": 0,
+				"form-main": "select",
+				"form-main-default": "",
+				"form-main-option": "〜の資料が欲しい／特に必要なし／未定",
+				"form-main-answer": "",
+				"form-sub": "",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": " 教員の教材研究用の図書も必要な場合は、ご希望について記入してください。",
+				"example": "民謡についての研究書[活用DB: A0152]",
+				"memo": ""
+			}
+		},
+		{
+			"id": "B-09",
+			"parent": "B",
+			"level": 2,
+			"type": "terminal",
+			"name": "その他",
+			"form": {
+				"dependence": "",
+				"importance": 0,
+				"prior": 0,
+				"form-main": "textarea",
+				"form-main-default": "",
+				"form-main-option": "",
+				"form-main-answer": "",
+				"form-sub": "",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "上記以外に、教材に関して要望があれば自由に記入してください。",
+				"example": "理系の生徒が拒絶しない内容のもの[活用DB: A0109]／原爆の被害について複数の立場や価値観から知ることができるもの[活用DB: A0091]",
+				"memo": ""
+			}
+		},
+		{
+			"id": "C",
+			"parent": "root",
+			"level": 1,
+			"type": "nonterminal",
+			"name": "提供に関する情報",
+			"form": {}
+		},
+		{
+			"id": "C-01",
+			"parent": "C",
+			"level": 2,
+			"type": "terminal",
+			"name": "提供方法",
+			"form": {
+				"dependence": "",
+				"importance": 3,
+				"prior": 0,
+				"form-main": "checkbox",
+				"form-main-default": "",
+				"form-main-option": "教室貸出／図書館展示／その他／未定",
+				"form-main-answer": "",
+				"form-sub": "textarea",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "選書した図書の提供方法に関する希望を選択してください（複数可）。期間、場所、配置方法など具体的に決まっていれば、詳細欄に記入してください。",
+				"example": "各テーマに関連する本を、分類番号順に並べて別置してほしい。／ブックトラックごと学級貸出してほしい。",
+				"memo": ""
+			}
+		},
+		{
+			"id": "C-02",
+			"parent": "C",
+			"level": 2,
+			"type": "terminal",
+			"name": "事前の準備",
+			"form": {
+				"dependence": "",
+				"importance": 3,
+				"prior": 0,
+				"form-main": "checkbox",
+				"form-main-default": "",
+				"form-main-option": "図書リスト作成／ワークシート等の作成／情報機器の用意／その他／未定",
+				"form-main-answer": "",
+				"form-sub": "textarea",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "授業開始前の準備に関する希望を記入してください（複数可）。具体的に決まっていれば、詳細欄に記入してください。",
+				"example": "読みやすい新書を分野ごとにまとめてブックリストにしてほしい。／ワークシートの作成に協力してほしい。／班ごとの検索用タブレットPCを準備してほしい。",
+				"memo": ""
+			}
+		},
+		{
+			"id": "C-03",
+			"parent": "C",
+			"level": 2,
+			"type": "terminal",
+			"name": "当日の関与",
+			"form": {
+				"dependence": "",
+				"importance": 3,
+				"prior": 0,
+				"form-main": "checkbox",
+				"form-main-default": "",
+				"form-main-option": "チームティーチング／読み聞かせ・ブックトーク／図書館利用教育／その他／未定",
+				"form-main-answer": "",
+				"form-sub": "textarea",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "図書館職員による授業当日のサポートに関する希望を選択してください（複数可）。具体的に決まっていれば、詳細欄に記入してください。",
+				"example": "（図書館利用教育の例）分類番号の見方を児童に教えてほしい、図鑑や事典の使い方を指導してほしい。",
+				"memo": ""
+			}
+		},
+		{
+			"id": "C-04",
+			"parent": "C",
+			"level": 2,
+			"type": "terminal",
+			"name": "その他",
+			"form": {
+				"dependence": "",
+				"importance": 3,
+				"prior": 0,
+				"form-main": "textarea",
+				"form-main-default": "",
+				"form-main-option": "",
+				"form-main-answer": "",
+				"form-sub": "",
+				"form-sub-default": "",
+				"form-sub-answer": "",
+				"description": "上記以外に、資料の提供に関して要望があれば自由に記入してください。",
+				"example": "保管していた過去の生徒の作品を一時的に図書館に展示してほしい。／子ども向けの読み聞かせ活動を行っている実演者のコーディネートをお願いしたい。／模造紙を使った発表ポスター作成を図書館の大きい机で行いたい。",
+				"memo": ""
+			}
 		}
-	},
-	{
-		"id": "A-04",
-		"parent": "A",
-		"level": 2,
-		"type": "terminal",
-		"name": "授業テーマ",
-		"form": {
-			"dependence": "",
-			"importance": 1,
-			"prior": 0,
-			"form-main": "input",
-			"form-main-default": "",
-			"form-main-option": "",
-			"form-main-answer": "",
-			"form-sub": "",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "教科書の単元（章）とは別に、授業テーマや授業名が決まっていれば、記入してください。",
-			"example": "中世のものづくり／世界の食文化を調べよう",
-			"memo": ""
-		}
-	},
-	{
-		"id": "A-05",
-		"parent": "A",
-		"level": 2,
-		"type": "terminal",
-		"name": "授業のねらい",
-		"form": {
-			"dependence": "",
-			"importance": 2,
-			"prior": 0,
-			"form-main": "textarea",
-			"form-main-default": "",
-			"form-main-option": "",
-			"form-main-answer": "",
-			"form-sub": "",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "この授業の学習目標や授業方針を記入してください。",
-			"example": "身の回りの品物から、日本の産業の特色と課題を考察させる。／江戸時代の生活文化などを調べる活動を通じて、江戸文学への興味関心を持たせる。／校内で観察できる植物を図鑑で調べることで、参考図書の使い方を習得させる。",
-			"memo": ""
-		}
-	},
-	{
-		"id": "A-06",
-		"parent": "A",
-		"level": 2,
-		"type": "terminal",
-		"name": "授業の背景",
-		"form": {
-			"dependence": "",
-			"importance": 1,
-			"prior": 0,
-			"form-main": "textarea",
-			"form-main-default": "",
-			"form-main-option": "",
-			"form-main-answer": "",
-			"form-sub": "",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "授業のきっかけ、時期的背景など補足的な情報を記入してください。",
-			"example": "ヘルスリテラシーを育てるためのカリキュラム研究の一環[活用DB: A0003]／理科の修学旅行（秩父・長瀞地方の地形と地質の学習）の事前学習[活用DB: A0086]",
-			"memo": ""
-		}
-	},
-	{
-		"id": "A-07",
-		"parent": "A",
-		"level": 2,
-		"type": "terminal",
-		"name": "授業の実施期間",
-		"form": {
-			"dependence": "",
-			"importance": 3,
-			"prior": 1,
-			"form-main": "select",
-			"form-main-default": "",
-			"form-main-option": "2021年○月○旬〜2021年○月○旬／未定",
-			"form-main-answer": "",
-			"form-sub": "",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "図書を用いた活動を行う期間を記入してください。",
-			"example": "2021年5月中旬〜2021年6月中旬",
-			"memo": ""
-		}
-	},
-	{
-		"id": "A-08",
-		"parent": "A",
-		"level": 2,
-		"type": "nonterminal",
-		"name": "活動",
-		"form": {
-		"prior": 1
-	}
-	},
-	{
-		"id": "A-08-a",
-		"parent": "A-08",
-		"level": 3,
-		"type": "terminal",
-		"name": "時間",
-		"form": {
-			"dependence": "",
-			"importance": 3,
-			"prior": 1,
-			"form-main": "input",
-			"form-main-default": "○時間目/○時間",
-			"form-main-option": "",
-			"form-main-answer": "",
-			"form-sub": "",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "図書を用いた活動に使う時間（時限）と、単元全体の総時間数を記入して下さい。",
-			"example": "1, 2時間目/8時間",
-			"memo": ""
-		}
-	},
-	{
-		"id": "A-08-b",
-		"parent": "A-08",
-		"level": 3,
-		"type": "terminal",
-		"name": "場所",
-		"form": {
-			"dependence": "",
-			"importance": 3,
-			"prior": 0,
-			"form-main": "checkbox",
-			"form-main-default": "",
-			"form-main-option": "教室／学校図書館／その他／未定",
-			"form-main-answer": "",
-			"form-sub": "input",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "活動の場所を選んでください（複数可）。「その他」を選択した場合、詳細欄に場所を記入してください。",
-			"example": "（その他の例）音楽室、家庭科室",
-			"memo": ""
-		}
-	},
-	{
-		"id": "A-08-c",
-		"parent": "A-08",
-		"level": 3,
-		"type": "terminal",
-		"name": "内容",
-		"form": {
-			"dependence": "",
-			"importance": 3,
-			"prior": 1,
-			"form-main": "checkbox",
-			"form-main-default": "",
-			"form-main-option": "調べ学習／読み聞かせ・ブックトーク／その他／未定",
-			"form-main-answer": "",
-			"form-sub": "textarea",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "活動内容を選択してください（複数可）。「その他」を選択した場合、詳細欄に具体的に記入してください。",
-			"example": "（その他の例）一斉読書、情報利用教育",
-			"memo": ""
-		}
-	},
-	{
-		"id": "A-08-d",
-		"parent": "A-08",
-		"level": 3,
-		"type": "terminal",
-		"name": "形態",
-		"form": {
-			"dependence": "",
-			"importance": 3,
-			"prior": 0,
-			"form-main": "checkbox",
-			"form-main-default": "",
-			"form-main-option": "個人学習／グループ学習／一斉授業／その他／未定",
-			"form-main-answer": "",
-			"form-sub": "textarea",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "活動形態を選択してください（複数可）。「その他」を選択した場合、詳細欄に具体的に記入してください。",
-			"example": "",
-			"memo": ""
-		}
-	},
-	{
-		"id": "A-08-e",
-		"parent": "A-08",
-		"level": 3,
-		"type": "terminal",
-		"name": "成果物",
-		"form": {
-			"dependence": "",
-			"importance": 3,
-			"prior": 0,
-			"form-main": "checkbox",
-			"form-main-default": "",
-			"form-main-option": "ワークシート／レポート／口頭発表／その他／未定",
-			"form-main-answer": "",
-			"form-sub": "textarea",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "活動の成果物を選択してください（複数可）。「その他」を選択した場合、詳細欄に具体的に記入してください。",
-			"example": "（その他の例）ポスター発表、演劇発表",
-			"memo": ""
-		}
-	},
-	{
-		"id": "A-08-f",
-		"parent": "A-08",
-		"level": 3,
-		"type": "terminal",
-		"name": "流れ",
-		"form": {
-			"dependence": "",
-			"importance": 1,
-			"prior": 0,
-			"form-main": "textarea",
-			"form-main-default": "",
-			"form-main-option": "",
-			"form-main-answer": "",
-			"form-sub": "",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "活動内容、形態、成果物等を踏まえつつ、図書を利用した活動の流れを、具体的に記入してください。",
-			"example": "(1) グループでキーワードを出し合い，それぞれ調査するテーマを決める。▶(2) テーマが決まったら各自で調べ作業に入る。最初は参考図書を使って，次に一般書・専門書等の図書にあたって調べを進める。▶(3) 調べたことをまとめて，グループ内でわかりやすく発表する。▶(4) グループの代表が全体の前で発表をする。[活用DB: A0125]",
-			"memo": ""
-		}
-	},
-	{
-		"id": "A-09",
-		"parent": "A",
-		"level": 2,
-		"type": "nonterminal",
-		"name": "授業者",
-		"form": {
-			"prior": 1
-	}
-	},
-	{
-		"id": "A-09-a",
-		"parent": "A",
-		"level": 3,
-		"type": "terminal",
-		"name": "同様の授業経験",
-		"form": {
-			"dependence": "",
-			"importance": 3,
-			"prior": 1,
-			"form-main": "radio",
-			"form-main-default": "",
-			"form-main-option": "経験あり／経験なし",
-			"form-main-answer": "",
-			"form-sub": "textarea",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "過去に、今回の授業と同様のテーマで授業を行ったことがある場合は、「経験あり」にチェックをしてください。特記事項があれば、詳細欄に記入してください。",
-			"example": "",
-			"memo": ""
-		}
-	},
-	{
-		"id": "A-09-b",
-		"parent": "A",
-		"level": 3,
-		"type": "terminal",
-		"name": "調べ学習経験",
-		"form": {
-			"dependence": "",
-			"importance": 1,
-			"prior": 0,
-			"form-main": "radio",
-			"form-main-default": "",
-			"form-main-option": "10単元以上／5〜9単元／1〜4単元／はじめて",
-			"form-main-answer": "",
-			"form-sub": "textarea",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "（調べ学習を行う場合のみ回答してください）調べ学習の授業を行った経験について選んでください。特記事項があれば、詳細欄に記入してください。",
-			"example": "",
-			"memo": ""
-		}
-	},
-	{
-		"id": "A-09-c",
-		"parent": "A",
-		"level": 3,
-		"type": "terminal",
-		"name": "読み聞かせ経験",
-		"form": {
-			"dependence": "",
-			"importance": 1,
-			"prior": 0,
-			"form-main": "radio",
-			"form-main-default": "",
-			"form-main-option": "10回以上／5〜9回／1〜4回／はじめて",
-			"form-main-answer": "",
-			"form-sub": "textarea",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "（読み聞かせやブックトークを行う場合のみ回答してください）授業として読み聞かせやブックトークを行った経験について選んでください。特記事項があれば、詳細欄に記入してください。",
-			"example": "",
-			"memo": ""
-		}
-	},
-	{
-		"id": "A-10",
-		"parent": "A",
-		"level": 2,
-		"type": "nonterminal",
-		"name": "学習者",
-		"form": {
-			"prior": 1
-	}
-	},
-	{
-		"id": "A-10-a",
-		"parent": "A",
-		"level": 3,
-		"type": "terminal",
-		"name": "クラス数",
-		"form": {
-			"dependence": "",
-			"importance": 3,
-			"prior": 1,
-			"form-main": "select",
-			"form-main-default": "",
-			"form-main-option": "1／2／3／4／5／6／7／8／9／10",
-			"form-main-answer": "",
-			"form-sub": "",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "クラスの数を記入してください。",
-			"example": "",
-			"memo": ""
-		}
-	},
-	{
-		"id": "A-10-b",
-		"parent": "A",
-		"level": 3,
-		"type": "terminal",
-		"name": "クラスの人数",
-		"form": {
-			"dependence": "",
-			"importance": 3,
-			"prior": 1,
-			"form-main": "input",
-			"form-main-default": "〜人",
-			"form-main-option": "",
-			"form-main-answer": "",
-			"form-sub": "",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "クラスの人数を記入してください。",
-			"example": "",
-			"memo": ""
-		}
-	},
-	{
-		"id": "A-10-c",
-		"parent": "A",
-		"level": 3,
-		"type": "terminal",
-		"name": "学習者の経験・様子",
-		"form": {
-			"dependence": "",
-			"importance": 1,
-			"prior": 0,
-			"form-main": "textarea",
-			"form-main-default": "",
-			"form-main-option": "",
-			"form-main-answer": "",
-			"form-sub": "textarea",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "学習者の調べ学習の経験や様子を記入してください。また、授業に関連した事前学習に行っている場合や過去に関連した単元の授業を行っている場合は、その内容を記入してください。",
-			"example": "中2の終わりから、京都に関する本を読み、自分達の班のテーマを明確にしてきました。 [活用DB: A0135]／一年生は今、ひらがなを習っている最中です。[活用DB: A0122]",
-			"memo": ""
-		}
-	},
-	{
-		"id": "A-11",
-		"parent": "A",
-		"level": 2,
-		"type": "terminal",
-		"name": "その他",
-		"form": {
-			"dependence": "",
-			"importance": 0,
-			"prior": 0,
-			"form-main": "textarea",
-			"form-main-default": "",
-			"form-main-option": "",
-			"form-main-answer": "",
-			"form-sub": "",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "上記以外に、授業に関して共有すべき事項があれば自由に記入してください。",
-			"example": "",
-			"memo": ""
-		}
-	},
-	{
-		"id": "B",
-		"parent": "root",
-		"level": 1,
-		"type": "nonterminal",
-		"name": "資料に関する情報",
-		"form": {
-			"prior": 1
-		}
-	},
-	{
-		"id": "B-01",
-		"parent": "B",
-		"level": 2,
-		"type": "terminal",
-		"name": "キーワード",
-		"form": {
-			"dependence": "",
-			"importance": 3,
-			"prior": 1,
-			"form-main": "input",
-			"form-main-default": "",
-			"form-main-option": "",
-			"form-main-answer": "",
-			"form-sub": "",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "用意して欲しい図書に関するキーワードを挙げてください。思いつくものをなるべく多めに挙げてください（３つ以上を目安）。",
-			"example": "火山、噴火、地震、断層／アイヌ、北海道、多文化共生",
-			"memo": ""
-		}
-	},
-	{
-		"id": "B-02",
-		"parent": "B",
-		"level": 2,
-		"type": "terminal",
-		"name": "指定図書",
-		"form": {
-			"dependence": "",
-			"importance": 1,
-			"prior": 0,
-			"form-main": "textarea",
-			"form-main-default": "",
-			"form-main-option": "",
-			"form-main-answer": "",
-			"form-sub": "",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "用意してほしい図書が決まっていれば、それらの書名や著者、冊数等を記入してください。",
-			"example": "『クラウディアの祈り』[活用DB: A0102]／夏目漱石と芥川龍之介の著作を10冊程度[活用DB: A0142]／『保存食のはなし』[活用DB: A0016]",
-			"memo": ""
-		}
-	},
-	{
-		"id": "B-03",
-		"parent": "B",
-		"level": 2,
-		"type": "terminal",
-		"name": "冊数",
-		"form": {
-			"dependence": "",
-			"importance": 2,
-			"prior": 0,
-			"form-main": "input",
-			"form-main-default": "約〜冊",
-			"form-main-option": "",
-			"form-main-answer": "",
-			"form-sub": "",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "用意して欲しい図書の冊数（種類数）を記入してください。",
-			"example": "",
-			"memo": ""
-		}
-	},
-	{
-		"id": "B-04",
-		"parent": "B",
-		"level": 2,
-		"type": "terminal",
-		"name": "複本",
-		"form": {
-			"dependence": "",
-			"importance": 3,
-			"prior": 1,
-			"form-main": "select",
-			"form-main-default": "",
-			"form-main-option": "希望なし／希望あり／未定",
-			"form-main-answer": "",
-			"form-sub": "textarea",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "複本に関する希望の有無を選択してください。「希望あり」を選択した場合、どのような図書について何冊程度の複本が必要か記入してください。",
-			"example": "全く同じ国語辞書を40冊[活用DB: A0199]",
-			"memo": ""
-		}
-	},
-	{
-		"id": "B-05",
-		"parent": "B",
-		"level": 2,
-		"type": "nonterminal",
-		"name": "図書の属性",
-		"form": {}
-	},
-	{
-		"id": "B-05-a",
-		"parent": "B-05",
-		"level": 3,
-		"type": "terminal",
-		"name": "資料形態",
-		"form": {
-			"dependence": "",
-			"importance": 3,
-			"prior": 0,
-			"form-main": "checkbox",
-			"form-main-default": "",
-			"form-main-option": "指定なし／単行本／文庫／新書／全集・叢書／辞典・事典／図鑑／絵本／コミック／DAISY／その他／未定",
-			"form-main-answer": "",
-			"form-sub": "input",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "図書の資料形態を選択してください（複数可）。「その他」を選択した場合、詳細欄に記入してください。避けて欲しい資料形態についても、詳細欄に記入してください。",
-			"example": "（その他の例）写真集",
-			"memo": ""
-		}
-	},
-	{
-		"id": "B-05-b",
-		"parent": "B-05",
-		"level": 3,
-		"type": "terminal",
-		"name": "内容",
-		"form": {
-			"dependence": "",
-			"importance": 1,
-			"prior": 0,
-			"form-main": "checkbox",
-			"form-main-default": "",
-			"form-main-option": "哲学／歴史・地理・伝記／社会科学／自然科学／技術／産業／芸術／言語／文学／文学（古典）／その他／未定",
-			"form-main-answer": "",
-			"form-sub": "input",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "図書の内容カテゴリーを選択してください（複数可）。より詳細な内容が決まっている場合、詳細欄に記入してください。",
-			"example": "江戸時代が舞台の小説[活用DB: A0001]／有名な数学者の伝記[活用DB: A0032]",
-			"memo": ""
-		}
-	},
-	{
-		"id": "B-05-c",
-		"parent": "B-05",
-		"level": 3,
-		"type": "terminal",
-		"name": "内容の新しさ",
-		"form": {
-			"dependence": "",
-			"importance": 3,
-			"prior": 0,
-			"form-main": "select",
-			"form-main-default": "",
-			"form-main-option": "出版から〜年以内／希望なし／未定",
-			"form-main-answer": "",
-			"form-sub": "",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "内容の新しさ（出版経過年数）に関する希望を記入してください。",
-			"example": "",
-			"memo": ""
-		}
-	},
-	{
-		"id": "B-05-d",
-		"parent": "B-05",
-		"level": 3,
-		"type": "terminal",
-		"name": "内容の難易度",
-		"form": {
-			"dependence": "",
-			"importance": 3,
-			"prior": 0,
-			"form-main": "checkbox",
-			"form-main-default": "",
-			"form-main-option": "小学校低学年／中学年／高学年／中学／高校／一般／指定なし／未定",
-			"form-main-answer": "",
-			"form-sub": "textarea",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "図書の難易度に関する希望があれば記入してください（複数可）。より詳細な要望があれば、詳細欄に記入してください。",
-			"example": "小学2年生が楽しめるもの[活用DB: A0149]",
-			"memo": ""
-		}
-	},
-	{
-		"id": "B-05-e",
-		"parent": "B-05",
-		"level": 3,
-		"type": "terminal",
-		"name": "その他の属性",
-		"form": {
-			"dependence": "",
-			"importance": 1,
-			"prior": 0,
-			"form-main": "textarea",
-			"form-main-default": "",
-			"form-main-option": "",
-			"form-main-answer": "",
-			"form-sub": "",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "その他希望する図書の属性（ジャンル、分量、サイズ、大きさ、目次や索引の有無など）を記入してください。",
-			"example": "短めの評論文が載っているもの／写真の多い、大きめの本／目次と索引のある本[活用DB: A0179]／文字があまり多くなく漢字にルビのあるもの[活用DB: A0170]",
-			"memo": "科学読み物"
-		}
-	},
-	{
-		"id": "B-06",
-		"parent": "B",
-		"level": 2,
-		"type": "terminal",
-		"name": "属性のバランス",
-		"form": {
-			"dependence": "",
-			"importance": 1,
-			"prior": 0,
-			"form-main": "textarea",
-			"form-main-default": "",
-			"form-main-option": "",
-			"form-main-answer": "",
-			"form-sub": "",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "資料全体における、上記(05)図書の属性（a〜e）のバランスについて、希望があれば記入してください。",
-			"example": "学年相応のものだけでなく、少しレベルを下げたものも入れて欲しい。／古くても良いものなら数冊程度は混ぜて良い。",
-			"memo": ""
-		}
-	},
-	{
-		"id": "B-07",
-		"parent": "B",
-		"level": 2,
-		"type": "terminal",
-		"name": "図書以外",
-		"form": {
-			"dependence": "",
-			"importance": 0,
-			"prior": 0,
-			"form-main": "checkbox",
-			"form-main-default": "",
-			"form-main-option": "新聞／雑誌／Webページ／その他／未定",
-			"form-main-answer": "",
-			"form-sub": "textarea",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "図書以外に用意して欲しい資料を選択してください。「その他」を選択した場合、詳細欄に具体的に記入してください。避けて欲しい資料形態についても、詳細欄に記入してください。",
-			"example": "（その他の例）電化製品のカタログ[活用DB: A0042]、調べ学習の前年度の作品[活用DB: A0062]、今回はインターネットは使いません",
-			"memo": ""
-		}
-	},
-	{
-		"id": "B-08",
-		"parent": "B",
-		"level": 2,
-		"type": "terminal",
-		"name": "教材研究用の図書",
-		"form": {
-			"dependence": "",
-			"importance": 1,
-			"prior": 0,
-			"form-main": "select",
-			"form-main-default": "",
-			"form-main-option": "〜の資料が欲しい／特に必要なし／未定",
-			"form-main-answer": "",
-			"form-sub": "",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": " 教員の教材研究用の図書も必要な場合は、ご希望について記入してください。",
-			"example": "民謡についての研究書[活用DB: A0152]",
-			"memo": ""
-		}
-	},
-	{
-		"id": "B-09",
-		"parent": "B",
-		"level": 2,
-		"type": "terminal",
-		"name": "その他",
-		"form": {
-			"dependence": "",
-			"importance": 0,
-			"prior": 0,
-			"form-main": "textarea",
-			"form-main-default": "",
-			"form-main-option": "",
-			"form-main-answer": "",
-			"form-sub": "",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "上記以外に、教材に関して要望があれば自由に記入してください。",
-			"example": "理系の生徒が拒絶しない内容のもの[活用DB: A0109]／原爆の被害について複数の立場や価値観から知ることができるもの[活用DB: A0091]",
-			"memo": ""
-		}
-	},
-	{
-		"id": "C",
-		"parent": "root",
-		"level": 1,
-		"type": "nonterminal",
-		"name": "提供に関する情報",
-		"form": {}
-	},
-	{
-		"id": "C-01",
-		"parent": "C",
-		"level": 2,
-		"type": "terminal",
-		"name": "提供方法",
-		"form": {
-			"dependence": "",
-			"importance": 3,
-			"prior": 0,
-			"form-main": "checkbox",
-			"form-main-default": "",
-			"form-main-option": "教室貸出／図書館展示／その他／未定",
-			"form-main-answer": "",
-			"form-sub": "textarea",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "選書した図書の提供方法に関する希望を選択してください（複数可）。期間、場所、配置方法など具体的に決まっていれば、詳細欄に記入してください。",
-			"example": "各テーマに関連する本を、分類番号順に並べて別置してほしい。／ブックトラックごと学級貸出してほしい。",
-			"memo": ""
-		}
-	},
-	{
-		"id": "C-02",
-		"parent": "C",
-		"level": 2,
-		"type": "terminal",
-		"name": "事前の準備",
-		"form": {
-			"dependence": "",
-			"importance": 3,
-			"prior": 0,
-			"form-main": "checkbox",
-			"form-main-default": "",
-			"form-main-option": "図書リスト作成／ワークシート等の作成／情報機器の用意／その他／未定",
-			"form-main-answer": "",
-			"form-sub": "textarea",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "授業開始前の準備に関する希望を記入してください（複数可）。具体的に決まっていれば、詳細欄に記入してください。",
-			"example": "読みやすい新書を分野ごとにまとめてブックリストにしてほしい。／ワークシートの作成に協力してほしい。／班ごとの検索用タブレットPCを準備してほしい。",
-			"memo": ""
-		}
-	},
-	{
-		"id": "C-03",
-		"parent": "C",
-		"level": 2,
-		"type": "terminal",
-		"name": "当日の関与",
-		"form": {
-			"dependence": "",
-			"importance": 3,
-			"prior": 0,
-			"form-main": "checkbox",
-			"form-main-default": "",
-			"form-main-option": "チームティーチング／読み聞かせ・ブックトーク／図書館利用教育／その他／未定",
-			"form-main-answer": "",
-			"form-sub": "textarea",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "図書館職員による授業当日のサポートに関する希望を選択してください（複数可）。具体的に決まっていれば、詳細欄に記入してください。",
-			"example": "（図書館利用教育の例）分類番号の見方を児童に教えてほしい、図鑑や事典の使い方を指導してほしい。",
-			"memo": ""
-		}
-	},
-	{
-		"id": "C-04",
-		"parent": "C",
-		"level": 2,
-		"type": "terminal",
-		"name": "その他",
-		"form": {
-			"dependence": "",
-			"importance": 3,
-			"prior": 0,
-			"form-main": "textarea",
-			"form-main-default": "",
-			"form-main-option": "",
-			"form-main-answer": "",
-			"form-sub": "",
-			"form-sub-default": "",
-			"form-sub-answer": "",
-			"description": "上記以外に、資料の提供に関して要望があれば自由に記入してください。",
-			"example": "保管していた過去の生徒の作品を一時的に図書館に展示してほしい。／子ども向けの読み聞かせ活動を行っている実演者のコーディネートをお願いしたい。／模造紙を使った発表ポスター作成を図書館の大きい机で行いたい。",
-			"memo": ""
-		}
-	}
-]
+	]
+}
 
 </script>
 

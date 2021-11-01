@@ -1,27 +1,11 @@
-// シート情報の描画
-$(document).ready(function () {
-  let sheetinfo = JSON.parse($("#data-sheetinfo").html());
-  let hearingDom = $("#basic-info-wrap");
-  hearingDom.find("#data-submissionid").val(sheetinfo["受付番号"]);
-  hearingDom.find("#data-submissiontime").val(sheetinfo["受付日"]);
-  hearingDom.find("#data-lastmodifiedtime").val(sheetinfo["最終更新日"]);
-  hearingDom.find("#data-creator").val(sheetinfo["作成者"]);
-  hearingDom.find("#data-version").val(sheetinfo["バージョン"]);
-  hearingDom.find("#data-progress").val(sheetinfo["進行状況"]);
-  hearingDom.find("#data-teacher").val(sheetinfo["授業者"]);
-  hearingDom.find("#data-librarian").val(sheetinfo["司書"]);
-  hearingDom.find("#data-sheetname").val(sheetinfo["シート名"]);
-  hearingDom.find("#data-sheetnote").val(sheetinfo["メモ"]);
-});
-
-function makeForm(formType, formDefault, formOption, id) {
+function makeForm(formType, formValue, formOption, id) {
   let formDom = "";
   if (formType == "input") {
-    formDom = $(`<input type="text" class="form-control form-control-sm" placeholder="" aria-label="" value="${formDefault}">`);
+    formDom = $(`<input type="text" class="form-control form-control-sm" placeholder="" aria-label="" value="${formValue}">`);
   } else if (formType == "textarea") {
-    formDom = $(`<textarea class="form-control form-control-sm auto-resize" rows="1" placeholder="" value="">${formDefault.replace(/▶/g, "\n")}</textarea>`);
+    formDom = $(`<textarea class="form-control form-control-sm auto-resize" rows="1" placeholder="" value="">${formValue.replace(/▶/g, "\n")}</textarea>`);
   } else if (formType == "select") {
-    formDom = $(`<div class="dropdown dropdown-option"><input type="text" class="form-control form-control-sm searchformss dropdown-toggle" data-toggle="dropdown" placeholder="" value="${formDefault}"><div class="dropdown-menu"></div></div>`);
+    formDom = $(`<div class="dropdown dropdown-option"><input type="text" class="form-control form-control-sm searchformss dropdown-toggle" data-toggle="dropdown" placeholder="" value="${formValue}"><div class="dropdown-menu"></div></div>`);
     let options = formOption.split('／');
     for (let i = 0; i < options.length; i++) {
       let optionDom = $(`<option>${options[i]}</option>`);
@@ -29,10 +13,10 @@ function makeForm(formType, formDefault, formOption, id) {
     }
   } else if (formType == "checkbox") {
     formDom = $(`<div class="checkbox-wrap"></div>`);
-    let formDefaultList = formDefault.split("／")
+    let formValueList = formValue.split("／")
     let options = formOption.split('／');
     for (let i = 0; i < options.length; i++) {
-      let checked = (formDefaultList.includes(options[i])) ? 'checked="checked"' : "";
+      let checked = (formValueList.includes(options[i])) ? 'checked="checked"' : "";
       let optionDom = $(`<div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="${id}-${options[i]}" value="${options[i]}" ${checked}><label class="form-check-label" for="${id}-${options[i]}">${options[i]}</label></div>`);
       formDom.append(optionDom);
     }
@@ -40,7 +24,7 @@ function makeForm(formType, formDefault, formOption, id) {
     formDom = $(`<div class="radio-wrap"></div>`);
     let options = formOption.split('／');
     for (let i = 0; i < options.length; i++) {
-      let checked = (options[i] == formDefault) ? 'checked="checked"' : "";
+      let checked = (options[i] == formValue) ? 'checked="checked"' : "";
       let optionDom = $(`<div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="radio-${id}" id="${id}-${options[i]}" value="${options[i]}" ${checked}><label class="form-check-label" for="${id}-${options[i]}">${options[i]}</label></div>`);
       formDom.append(optionDom);
     }
@@ -53,51 +37,78 @@ function makeBRtag(string) {
 }
 
 
-// フォームの描画
-$(document).ready(function () {
-  let structure = JSON.parse($("#data-structure").html());
-  let hearingDom = $("#hearing-item-wrap");
-  for (let i = 0; i < structure.length; i++) {
-    let id = structure[i]["id"];
-    let parent = structure[i]["parent"];
+// シートの描画
+function makeSheet(spec) {
+  // メタ情報の描画
+  let meta = spec["sheet-meta"];
+  let metaDom = $("#basic-info-wrap");
+  metaDom.find("#data-submissionid").val(meta["受付番号"]);
+  metaDom.find("#data-submissiontime").val(meta["受付日"]);
+  metaDom.find("#data-lastmodifiedtime").val(meta["最終更新日"]);
+  metaDom.find("#data-creator").val(meta["作成者"]);
+  metaDom.find("#data-version").val(meta["バージョン"]);
+  metaDom.find("#data-progress").val(meta["進行状況"]);
+  metaDom.find("#data-teacher").val(meta["授業者"]);
+  metaDom.find("#data-librarian").val(meta["司書"]);
+  metaDom.find("#data-sheetname").val(meta["シート名"]);
+  metaDom.find("#data-sheetnote").val(meta["メモ"]);
+
+  // 入力項目の描画
+  let content = spec["sheet-content"];
+  let contentDom = $("#hearing-item-wrap");
+  for (let i = 0; i < content.length; i++) {
+    let id = content[i]["id"];
+    let parent = content[i]["parent"];
     let idsimple = id.split('-').slice(-1)[0];
-    let level = structure[i]["level"];
+    let level = content[i]["level"];
     let prefix = (level >= 2) ? "" : "";
-    let type = structure[i]["type"];
-    let name = structure[i]["name"];
+    let type = content[i]["type"];
+    let name = content[i]["name"];
     // 事前入力推奨項目のマーキング
     let prior = "";
-    if (structure[i]["form"]["prior"] == 1) {
+    if (content[i]["form"]["prior"] == 1) {
       prior = '<span class="form-prior"></span>';
     }
-    if (structure[i]["form"]["prior"] == 1 && structure[i]["type"] == "terminal") {
+    if (content[i]["form"]["prior"] == 1 && content[i]["type"] == "terminal") {
       prior += "*";
     }
     let eachDom = $(`<div id="${id}" data-parent="${parent}" class="hearing-each-wrap level-${level} ${type}"  data-name="${name}"><div class="hearing-each-name">${prefix}(${idsimple}) ${name}${prior}</div></div>`);
     if (type == "terminal") {
       eachDom.append($(`<div class="form-wrap"><div class="form-main"></div></div>`));
-      let dependence = structure[i]["form"]["dependence"];
-      let description = structure[i]["form"]["description"];
-      let example = structure[i]["form"]["example"];
+      let dependence = content[i]["form"]["dependence"];
+      let description = content[i]["form"]["description"];
+      let example = content[i]["form"]["example"];
       eachDom.attr("data-dependence", dependence);
       eachDom.attr("data-description", description);
       eachDom.attr("data-example", example);
-      let mainDom = makeForm(structure[i]["form"]["form-main"], structure[i]["form"]["form-main-default"], structure[i]["form"]["form-main-option"], id);
+      // 回答が記入済みかの判定
+      let form_main_value = (content[i]["form"]["form-main-answer"] != "") ? content[i]["form"]["form-main-answer"] : content[i]["form"]["form-main-default"];
+      let mainDom = makeForm(content[i]["form"]["form-main"], form_main_value, content[i]["form"]["form-main-option"], id);
       eachDom.find(".form-main").append(mainDom);
-      if (structure[i]["form"]["form-sub"] != "") {
-        let subDom = makeForm(structure[i]["form"]["form-sub"], structure[i]["form"]["form-sub-default"], "", id);
+      if (content[i]["form"]["form-sub"] != "") {
+        // 回答が記入済みかの判定
+        let form_sub_value = (content[i]["form"]["form-sub-answer"] != "") ? content[i]["form"]["form-sub-answer"] : content[i]["form"]["form-sub-default"];
+        let subDom = makeForm(content[i]["form"]["form-sub"], form_sub_value, "", id);
         subDom.attr("placeholder", "詳細");
         eachDom.find(".form-wrap").append($(`<div class="form-sub"></div>`));
         eachDom.find(".form-sub").append(subDom);
       }
     }
-    hearingDom.append(eachDom);
+    contentDom.append(eachDom);
   }
+}
+
+
+$(document).ready(function () {
+  let spec = JSON.parse($("#data-sheetspec").html());
+  makeSheet(spec);
 });
 
+
 // textareaの動的リサイズ
-// 読み込み時
-$(document).ready(function () {
+
+//// リサイズ関数
+function resizeTextarea() {
   $('textarea.auto-resize').each(function (index, element) {
     if ($(element).outerHeight() > this.scrollHeight) {
       $(element).height(1)
@@ -106,9 +117,14 @@ $(document).ready(function () {
       $(element).height($(element).height() + 1)
     }
   })
+}
+
+//// 読み込み時
+$(document).ready(function () {
+  resizeTextarea();
 });
 
-// 入力時
+//// 入力時
 $(function () {
   $(document).on('change keyup keydown paste cut',
     'textarea.auto-resize', function () {
@@ -133,7 +149,7 @@ $(document).on("mouseleave", ".form-control", function () {
 
 // ガイドの生成と移動
 function makeGuide(id) {
-  let structure = JSON.parse($("#data-structure").html());
+  let content = JSON.parse($("#data-sheetspec").html())['sheet-content'];
   let targetDom = $("#" + id);
   let guideDom = $("#guide-wrap");
   let name = targetDom.attr("data-name");
@@ -147,11 +163,11 @@ function makeGuide(id) {
 
   // 見出しの作成
   while (parent_id != "root") {
-    for (var i = 0; i < structure.length; i++) {
-      if (structure[i]["id"] == parent_id) {
+    for (var i = 0; i < content.length; i++) {
+      if (content[i]["id"] == parent_id) {
         let id_last = parent_id.split('-').slice(-1)[0];
-        heading = `(${id_last}) ${structure[i]["name"]} ＞ ${heading}`;
-        parent_id = structure[i]["parent"];
+        heading = `(${id_last}) ${content[i]["name"]} ＞ ${heading}`;
+        parent_id = content[i]["parent"];
       }
     }
   }
@@ -174,7 +190,7 @@ function makeGuide(id) {
   $(".guide-item-wrap").css({ display: "none" });
   // $(".guide-item-wrap").removeClass("hidden");
   $(".guide-item-wrap").css({
-    top: targetDom.offset().top - 200
+    top: targetDom.offset().top - 180
   });
   $(".guide-item-wrap").fadeIn(700);
   // $(".guide-item-wrap").animate({
@@ -288,6 +304,8 @@ $(document).on('click', '#display-prior', function () {
   });
   $(this).text("全項目を表示");
   $(this).attr("id", "display-all");
+  $(this).addClass("btn-warning");
+  $(this).removeClass("btn-secondary");
 });
 
 // 事前入力推奨項目のみの表示
@@ -297,8 +315,9 @@ $(document).on('click', '#display-all', function () {
   });
   $(this).text("* 事前入力推奨項目のみを表示");
   $(this).attr("id", "display-prior");
+  $(this).addClass("btn-secondary");
+  $(this).removeClass("btn-warning");
 });
-
 
 // シートの印刷
 $(document).on('click', '#print-sheet', function () {
@@ -329,13 +348,78 @@ function getFormAnswer(formDom) {
     checked.push($(element).val());
   });
   text += input ? input : "";
-  text += checked ? checked.join("/") : "";
+  text += checked ? checked.join("／") : "";
   text = text.replace(/\r\n|\r|\n/g, "▶");
   return text;
 }
 
+
+// 既存シートの読み込み
+$(document).on('click', '#show-user-sheet', function () {
+  let result = window.confirm('現在表示中のシートの内容は上書きされますが、よろしいでしょうか。');
+  if (result) {
+    let file = document.getElementById('open-user-sheet').files[0];
+    let file_content;
+    console.log(file);
+    reader = new FileReader();
+    reader.onload = function (evt) {
+      console.log("State: " + evt.target.readyState);
+      console.log("Result: " + evt.target.result);
+      file_content = JSON.parse(evt.target.result);
+      $("#hearing-item-wrap").empty();
+      makeSheet(file_content);
+      resizeTextarea();
+    };
+    reader.readAsText(file, "utf-8");
+  }
+});
+
+
+// SpecのJSONを更新
+function updateSpec() {
+  let json_data = JSON.parse($("#data-sheetspec").text());
+
+  // シート管理情報
+  $(".sheet-info-each").each(function (index, element) {
+    if ($(element).hasClass("input-group-text")) {
+      let string = $(element).text().split("：").join("\t");
+      tsv_data = tsv_data + string + "\r\n";
+    } else {
+      let label = $(element).attr("data-label");
+      let value = $(element).val();
+      json_data["sheet-meta"][label] = value;
+    };
+  });
+
+  // 回答結果
+  $(".hearing-each-wrap").each(function (index, element) {
+    let id = $(element).attr("id");
+    let mainDom = $(element).find(".form-main");
+    let subDom = $(element).find(".form-sub");
+    let answerText = getFormAnswer(mainDom);
+    let subAnswerText = getFormAnswer(subDom);
+
+    for (let i = 0; i < json_data['sheet-content'].length; i++) {
+      const item = json_data['sheet-content'][i];
+      let item_id = item['id'];
+      if (id == item_id) {
+        json_data['sheet-content'][i]['form']['form-main-answer'] = answerText;
+        json_data['sheet-content'][i]['form']['form-sub-answer'] = subAnswerText;
+        console.log(answerText);
+      }
+    }
+
+    console.log(json_data);
+    $("#data-sheetspec").text(JSON.stringify(json_data, null, 2));
+
+  });
+}
+
+
 // シートの出力
-$(document).on('click', '#output-sheet', function () {
+
+//// TSV出力
+$(document).on('click', '#output-sheet-tsv', function () {
 
   // BOMの用意（文字化け対策）
   let bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
@@ -344,6 +428,7 @@ $(document).on('click', '#output-sheet', function () {
   // id, name, answer, description
   let tsv_data = "======打ち合わせシート======\r\n【シート管理情報】\r\n";
 
+  // ToDo: JSONから作成する
   // シート管理情報
   $(".sheet-info-each").each(function (index, element) {
     if ($(element).hasClass("input-group-text")) {
@@ -354,8 +439,8 @@ $(document).on('click', '#output-sheet', function () {
     };
   });
 
-  // 回答結果
-  tsv_data += "\r\n【回答結果】\r\nID\t項目\t回答\t説明\r\n";
+  // 打ち合わせ項目入力内容
+  tsv_data += "\r\n【打ち合わせ項目入力内容】\r\nID\t項目\t回答\t説明\r\n";
   $(".hearing-each-wrap").each(function (index, element) {
     let id = $(element).attr("id");
     let name = $(element).attr("data-name");
@@ -378,11 +463,37 @@ $(document).on('click', '#output-sheet', function () {
 
   let url = (window.URL || window.webkitURL).createObjectURL(blob);
 
-  let downloader = document.getElementById('downloader');
-  downloader.download = 'hearing-sheet.tsv';
+  let downloader = document.getElementById('downloader-tsv');
+  downloader.download = 'sheet.tsv';
   downloader.href = url;
 
   // ダウンロードリンクをクリックする
-  $('#downloader')[0].click();
+  $('#downloader-tsv')[0].click();
+
+});
+
+
+//// JSON出力
+$(document).on('click', '#output-sheet-json', function () {
+
+  // まずJSONを更新
+  updateSpec();
+
+  // BOMの用意（文字化け対策）
+  let bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
+
+  // シート管理情報
+  let json_data = $("#data-sheetspec").text();
+
+  let blob = new Blob([bom, json_data], { type: 'text/json' });
+
+  let url = (window.URL || window.webkitURL).createObjectURL(blob);
+
+  let downloader = document.getElementById('downloader-json');
+  downloader.download = 'sheet.json';
+  downloader.href = url;
+
+  // ダウンロードリンクをクリックする
+  $('#downloader-json')[0].click();
 
 });
